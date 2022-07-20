@@ -1,17 +1,11 @@
-import { useEffect, useContext } from "react";
+import { useContext } from "react";
 import Spinner from "../layout/Spinner";
 import UserItem from "./UserItem";
 import GithubContext from "../../context/github/GithubContext";
 
 function UserResults() {
 
-    const { users, loading, fetchUsers } = useContext(GithubContext);
-
-    useEffect(() => {
-        fetchUsers();
-    }, []) // empty brackets signals to our useEffect hook that is has no dependencies (runs on DOM load as designed)
-
-
+    const { users, loading } = useContext(GithubContext);
 
     // Make sure that we do not render information on the page if our page has not finished loading
     // Loading state should be false for this to run (it is by default true)
