@@ -1,4 +1,3 @@
-import { clear } from "@testing-library/user-event/dist/clear";
 import { useState, useContext } from "react";
 import GithubContext from "../../context/github/GithubContext";
 
@@ -29,10 +28,6 @@ function UserSearch() {
         }
     };
 
-    const clearState = () => {
-        console.log('button clicked')
-        clearUsers()
-    }
 
     return (
     <div className="grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 mb-8 gap-8">
@@ -56,7 +51,7 @@ function UserSearch() {
                 <div>
                     <button 
                         className="btn btn-glass btn-lg bg-black-600"
-                        onClick={clearState}
+                        onClick={clearUsers}
                         >Clear</button>
                 </div>
             )
