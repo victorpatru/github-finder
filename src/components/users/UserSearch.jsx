@@ -1,13 +1,15 @@
 import { useState, useContext } from "react";
 import GithubContext from "../../context/github/GithubContext";
+import AlertContext from "../../context/alert/AlertContext";
 
 function UserSearch() {
     // Setting the state
     const [text, setText] = useState("");
 
     // Setting up the context Hook
-    const { users, searchUsers, clearUsers } = useContext(GithubContext); 
+    const { users, searchUsers, clearUsers  } = useContext(GithubContext); 
 
+    const { setAlert } = useContext(AlertContext);
 
     // Setting our state based on the input value
     const handleChange = (e) => setText(e.target.value);
@@ -18,7 +20,7 @@ function UserSearch() {
 
         // Form validation
         if (text === "") {
-            alert("Please input value into the search box")
+            setAlert("Please input value into the search box", "error")
         } else {
             // From our Context, fetch from the API based on the value of our state (value that we get from the input search box)
             searchUsers(text);
