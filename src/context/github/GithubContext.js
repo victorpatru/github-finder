@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useReducer } from "react";
+import githubReducer from "./GithubReducer";
 
 // Creating the context instance
 const GithubContext = createContext();
@@ -9,16 +10,12 @@ const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 
 
 export const GithubProvider = ({ children }) => {
-    // Set up our users state initialize with an empty array
-    // As we fetch from the Github API we will use that information to populate the state
-    const [ users, setUsers ] = useState([]);
-    // Set up our page loading state
-    // By default our page is loading
-    const [ loading, setLoading ] = useState(true);
+    const initialState = {
+        users: [],
+        loading: true
+    }
 
-    useEffect(() => {
-        fetchUsers();
-    }, []) // empty brackets signals to our useEffect hook that is has no dependencies (runs on DOM load as designed)
+    const [state, dispatch] = useReducer(githubReducer, initialState);
 
     const fetchUsers = async () => {
         // Fetch data from the Github API using our personal token (env)
@@ -29,18 +26,20 @@ export const GithubProvider = ({ children }) => {
         });
         const data = await response.json();
         
-        // Updating our states (users and loading)
-        // Populating our users state and changing our default loading state
-        setUsers(data);
-        setLoading(false);
+        
+        dispatch({
+            type: "GET_USERS",
+            payload: data
+        })
 
     }
 
 
     return (
+        // Creating the context allowing other components to access state and functions defined in the GithubContext
         <GithubContext.Provider value={{
-            users,
-            loading,
+            users: state.users,
+            loading: state.loading,
             fetchUsers
 
         }}>
