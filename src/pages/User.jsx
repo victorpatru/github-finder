@@ -4,11 +4,12 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Spinner from "../components/layout/Spinner";
 import GithubContext from "../context/github/GithubContext"
+import RepoList from "../components/repos/RepoList";
 
 function User() {
 
   // Get from our context the ability to fetch a single user
-  const { getUser, user, loading } = useContext(GithubContext);
+  const { getUser, user, loading, getUserRepos, repos } = useContext(GithubContext);
 
   const params = useParams()
 
@@ -16,6 +17,8 @@ function User() {
   // eg. if the path is user/victor then it will fetch the user with the on screen name of @victor
   useEffect(() => {
     getUser(params.login)
+    getUserRepos(params.login)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const {
@@ -173,8 +176,9 @@ function User() {
               {public_gists}
             </div>
           </div>
-
         </div>
+
+        <RepoList repos={repos} />
       </div>
     </>
   )
