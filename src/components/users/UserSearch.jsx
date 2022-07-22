@@ -1,13 +1,14 @@
 import { useState, useContext } from "react";
 import GithubContext from "../../context/github/GithubContext";
 import AlertContext from "../../context/alert/AlertContext";
+import { searchUsers } from "../../context/github/GithubActions"
 
 function UserSearch() {
     // Setting the state
     const [text, setText] = useState("");
 
     // Setting up the context Hook
-    const { users, searchUsers, clearUsers  } = useContext(GithubContext); 
+    const { users, dispatch, clearUsers  } = useContext(GithubContext); 
 
     const { setAlert } = useContext(AlertContext);
 
@@ -15,15 +16,18 @@ function UserSearch() {
     const handleChange = (e) => setText(e.target.value);
 
     // Our form submit functionality
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault(); // ensures that our page does not reload once we hit the "Go" button
 
         // Form validation
         if (text === "") {
             setAlert("Please input value into the search box", "error")
         } else {
-            // From our Context, fetch from the API based on the value of our state (value that we get from the input search box)
-            searchUsers(text);
+            dispatch({type: "SET_LOADING"})
+
+            const users = await searchUsers(text);
+
+            dispatch({ type: "GET_USERS", payload: users})
 
             // Reset our state
             setText("");
