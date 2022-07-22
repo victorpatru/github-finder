@@ -5,19 +5,30 @@ import { Link } from "react-router-dom";
 import Spinner from "../components/layout/Spinner";
 import GithubContext from "../context/github/GithubContext"
 import RepoList from "../components/repos/RepoList";
+import { getUser, getUserRepos} from "../context/github/GithubActions";
 
 function User() {
 
   // Get from our context the ability to fetch a single user
-  const { getUser, user, loading, getUserRepos, repos } = useContext(GithubContext);
+  const { user, loading, repos, dispatch } = useContext(GithubContext);
 
   const params = useParams()
 
   // On DOM load, make a get request using the parameter in the URL
   // eg. if the path is user/victor then it will fetch the user with the on screen name of @victor
   useEffect(() => {
-    getUser(params.login)
-    getUserRepos(params.login)
+      dispatch( { type: "SET_LOADING "} )
+
+      const getUserData = async () => {
+        const userData = await getUser(params.login)
+        dispatch({type: "GET_USER", payload: userData})
+
+        const userRepoData = await getUserRepos(params.login)
+        dispatch({ type: "GET_REPOS", payload: userRepoData })
+
+      }
+
+      getUserData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
